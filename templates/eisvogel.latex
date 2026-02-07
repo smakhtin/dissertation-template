@@ -84,11 +84,13 @@ $else$
 \usepackage[margin=2.5cm,includehead=true,includefoot=true,centering,$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
 $endif$
 
+$if(sentence-no-split)$
 % Prevent sentences and paragraphs from being split across pages
 \widowpenalty=10000
 \clubpenalty=10000
 \raggedbottom
 \interlinepenalty=10000
+$endif$
 
 \usepackage{amsmath,amssymb}
 $if(cancel)$
@@ -390,9 +392,11 @@ $endif$
 % The option H means 'PUT IT HERE' (as  opposed to the standard h option which means 'You may put it here if you like').
 \usepackage{float}
 \floatplacement{figure}{$if(float-placement-figure)$$float-placement-figure$$else$H$endif$}
+$if(images-own-page)$
 % One image per page, centered vertically and horizontally
 \BeforeBeginEnvironment{figure}{\clearpage\null\vfill}
 \AfterEndEnvironment{figure}{\vfill\clearpage}
+$endif$
 \AtBeginEnvironment{figure}{\centering}
 \makeatother
 $endif$
