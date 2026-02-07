@@ -360,8 +360,9 @@ $if(graphics)$
 \usepackage[export]{adjustbox}
 \makeatletter
 \newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{% scales image to fit in text height/width and crops to square
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
   \sbox\pandoc@box{#1}%
+$if(square-images)$
   % Calculate dimensions
   \setlength{\@tempdima}{\wd\pandoc@box}%
   \setlength{\@tempdimb}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
@@ -375,6 +376,14 @@ $if(graphics)$
     \setlength{\@tempdimc}{\dimexpr(\@tempdimb-\@tempdima)/2\relax}%
     \adjustbox{trim=0pt {\@tempdimc} 0pt {\@tempdimc}, clip, max height=0.85\textheight, max width=\linewidth}{\usebox\pandoc@box}%
   \fi%
+$else$
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+$endif$
 }
 % Set default figure placement to htbp
 % Make use of float-package and set default placement for figures to H.
