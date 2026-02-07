@@ -695,6 +695,13 @@ $endif$
 % sans-serif. Use the normal body font for headings.
 \addtokomafont{disposition}{\normalfont\color{heading-color}\bfseries}
 
+% Make first level headers underlined
+$if(book)$
+\addtokomafont{chapter}{\underline}
+$else$
+\addtokomafont{section}{\underline}
+$endif$
+
 %
 % variables for title, author and date
 %
