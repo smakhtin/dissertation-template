@@ -695,11 +695,14 @@ $endif$
 % sans-serif. Use the normal body font for headings.
 \addtokomafont{disposition}{\normalfont\color{heading-color}\bfseries}
 
-% Make first level headers underlined
+% Make first level headers underlined and start from new page
 $if(book)$
 \addtokomafont{chapter}{\underline}
 $else$
 \addtokomafont{section}{\underline}
+\RedeclareSectionCommand[beforeskip=-1sp,afterskip=1sp]{section}
+\let\oldsection\section
+\renewcommand{\section}{\clearpage\oldsection}
 $endif$
 
 %
