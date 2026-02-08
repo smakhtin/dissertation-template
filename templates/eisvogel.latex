@@ -360,6 +360,7 @@ $--
 $if(graphics)$
 \usepackage{graphicx}
 \usepackage[export]{adjustbox}
+\usepackage{tikz}
 \makeatletter
 \newsavebox\pandoc@box
 \newcommand*\pandocbounded[1]{% scales image to fit in text height/width
@@ -386,6 +387,20 @@ $else$
   \else\usebox{\pandoc@box}%
   \fi%
 $endif$
+}
+% Command for full-page images - fills entire page as background, cropping if needed
+\newcommand{\fullpageimage}[1]{%
+  \clearpage%
+  \thispagestyle{empty}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \clip (current page.south west) rectangle (current page.north east);
+    \node[inner sep=0pt] at (current page.center){%
+      \adjustbox{min width=\paperwidth, min height=\paperheight}{%
+        \includegraphics{#1}%
+      }%
+    };
+  \end{tikzpicture}%
+  \clearpage%
 }
 % Set default figure placement to htbp
 % Make use of float-package and set default placement for figures to H.
