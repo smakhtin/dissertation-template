@@ -393,11 +393,8 @@ $endif$
   \clearpage%
   \thispagestyle{empty}%
   \begin{tikzpicture}[remember picture,overlay]
-    \clip (current page.south west) rectangle (current page.north east);
     \node[inner sep=0pt] at (current page.center){%
-      \adjustbox{min width=\paperwidth, min height=\paperheight}{%
-        \includegraphics{#1}%
-      }%
+      \includegraphics[width=\paperwidth,height=\paperheight,keepaspectratio]{#1}%
     };
   \end{tikzpicture}%
   \clearpage%
