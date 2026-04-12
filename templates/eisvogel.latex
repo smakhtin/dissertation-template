@@ -545,20 +545,15 @@ $endif$
 \item\relax\color{blockquote-text}\ignorespaces}{\unskip\unskip\endlist\end{customblockquote}}
 
 %
-% Source Sans Pro as the default font family
+% Roboto as the default font family
 % Source Code Pro for monospace text
 %
-% 'default' option sets the default
-% font family to Source Sans Pro, not \sfdefault.
-%
-% Note that the font has been officially renamed to `Source Sans 3`, and
-% the version provided by the `sourcesanspro` package is slightly outdated.
-% You can install the newer version locally and use it, for example, with
-% `fontfamily: sourcesanspro` in the YAML metadata.
+% Use Roboto as sans-serif and make sans-serif the document default.
 %
 $if(fontfamily)$
 $else$
-\usepackage[default]{sourcesanspro}
+\usepackage[sfdefault]{roboto}
+\renewcommand{\familydefault}{\sfdefault}
 \usepackage{sourcecodepro}
 $endif$
 
@@ -566,7 +561,7 @@ $endif$
 % heading color
 %
 \definecolor{heading-color}{RGB}{40,40,40}
-\newcommand{\headingfontfamily}{\ttfamily}
+\newcommand{\headingfontfamily}{\roboto\selectfont}
 \usepackage{roboto}
 \newcommand{\chapterfontfamily}{\roboto\fontseries{l}\selectfont}
 % By default, the KOMA-Script classes will typeset sectioning headings in
