@@ -43,9 +43,6 @@
 \PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names,table}{xcolor}
-$if(CJKmainfont)$
-\PassOptionsToPackage{space}{xeCJK}
-$endif$
 \documentclass[
 $for(babel-otherlangs)$
   $babel-otherlangs$,
@@ -114,24 +111,9 @@ $if(numbersections)$
 $else$
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 $endif$
-\usepackage{iftex}
-\ifPDFTeX
-  \usepackage[$if(fontenc)$$fontenc$$else$T1$endif$]{fontenc}
-  \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provide euro and other symbols
-\else % if luatex or xetex
-$if(mathspec)$
-  \ifXeTeX
-    \usepackage{mathspec} % this also loads fontspec
-  \else
-    \usepackage{unicode-math} % this also loads fontspec
-  \fi
-$else$
-  \usepackage{unicode-math} % this also loads fontspec
-$endif$
-  \defaultfontfeatures{Scale=MatchLowercase}$-- must come before Beamer theme
-  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
-\fi
+\usepackage[$if(fontenc)$$fontenc$$else$T1$endif$]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp} % provide euro and other symbols
 $if(fontfamily)$
 $else$
 $-- Set default font before Beamer theme so the theme can override it
@@ -141,79 +123,6 @@ $-- User font settings (must come after default font and Beamer theme)
 $if(fontfamily)$
 \usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
 $endif$
-\ifPDFTeX\else
-  % xetex/luatex font selection
-$if(mainfont)$
-$if(mainfontfallback)$
-  \ifLuaTeX
-    \usepackage{luaotfload}
-    \directlua{luaotfload.add_fallback("mainfontfallback",{
-      $for(mainfontfallback)$"$mainfontfallback$"$sep$,$endfor$
-    })}
-  \fi
-$endif$
-  \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$$if(mainfontfallback)$,RawFeature={fallback=mainfontfallback}$endif$]{$mainfont$}
-$endif$
-$if(sansfont)$
-$if(sansfontfallback)$
-  \ifLuaTeX
-    \usepackage{luaotfload}
-    \directlua{luaotfload.add_fallback("sansfontfallback",{
-      $for(sansfontfallback)$"$sansfontfallback$"$sep$,$endfor$
-    })}
-  \fi
-$endif$
-  \setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$$if(sansfontfallback)$,RawFeature={fallback=sansfontfallback}$endif$]{$sansfont$}
-$endif$
-$if(monofont)$
-$if(monofontfallback)$
-  \ifLuaTeX
-    \usepackage{luaotfload}
-    \directlua{luaotfload.add_fallback("monofontfallback",{
-      $for(monofontfallback)$"$monofontfallback$"$sep$,$endfor$
-    })}
-  \fi
-$endif$
-  \setmonofont[$for(monofontoptions)$$monofontoptions$$sep$,$endfor$$if(monofontfallback)$,RawFeature={fallback=monofontfallback}$endif$]{$monofont$}
-$endif$
-$for(fontfamilies)$
-  \newfontfamily{$fontfamilies.name$}[$for(fontfamilies.options)$$fontfamilies.options$$sep$,$endfor$]{$fontfamilies.font$}
-$endfor$
-$if(mathfont)$
-$if(mathspec)$
-  \ifXeTeX
-    \setmathfont(Digits,Latin,Greek)[$for(mathfontoptions)$$mathfontoptions$$sep$,$endfor$]{$mathfont$}
-  \else
-    \setmathfont[$for(mathfontoptions)$$mathfontoptions$$sep$,$endfor$]{$mathfont$}
-  \fi
-$else$
-  \setmathfont[$for(mathfontoptions)$$mathfontoptions$$sep$,$endfor$]{$mathfont$}
-$endif$
-$endif$
-$if(CJKmainfont)$
-  \ifXeTeX
-    \usepackage{xeCJK}
-    \setCJKmainfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}
-$if(CJKsansfont)$
-    \setCJKsansfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKsansfont$}
-$endif$
-$if(CJKmonofont)$
-    \setCJKmonofont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmonofont$}
-$endif$
-  \fi
-$endif$
-$if(luatexjapresetoptions)$
-  \ifLuaTeX
-    \usepackage[$for(luatexjapresetoptions)$$luatexjapresetoptions$$sep$,$endfor$]{luatexja-preset}
-  \fi
-$endif$
-$if(CJKmainfont)$
-  \ifLuaTeX
-    \usepackage[$for(luatexjafontspecoptions)$$luatexjafontspecoptions$$sep$,$endfor$]{luatexja-fontspec}
-    \setmainjfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}
-  \fi
-$endif$
-\fi
 $if(zero-width-non-joiner)$
 %% Support for zero-width non-joiner characters.
 \makeatletter
@@ -225,12 +134,7 @@ $if(zero-width-non-joiner)$
   }{}%
 }
 \makeatother
-\ifPDFTeX
-  \DeclareUnicodeCharacter{200C}{\zerowidthnonjoiner}
-\else
-  \catcode`^^^^200c=\active
-  \protected\def ^^^^200c{\zerowidthnonjoiner}
-\fi
+\DeclareUnicodeCharacter{200C}{\zerowidthnonjoiner}
 %% End of ZWNJ support
 $endif$
 % Use upquote if available, for straight quotes in verbatim environments
@@ -419,11 +323,7 @@ $--
 $-- strikeout/underline
 $--
 $if(strikeout)$
-\ifLuaTeX
-  \usepackage{luacolor}
-  \usepackage[soul]{lua-ul}
-\else
-  \usepackage{soul}
+\usepackage{soul}
 $if(beamer)$
   \makeatletter
   \let\HL\hl
@@ -433,14 +333,6 @@ $if(beamer)$
     \HL}
   \makeatother
 $endif$
-$if(CJKmainfont)$
-  \ifXeTeX
-    % soul's \st doesn't work for CJK:
-    \usepackage{xeCJKfntef}
-    \renewcommand{\st}[1]{\sout{#1}}
-  \fi
-$endif$
-\fi
 $endif$
 $--
 $-- CSL citations
@@ -484,25 +376,7 @@ $--
 $-- Babel language support
 $--
 $if(lang)$
-\ifLuaTeX
-\usepackage[bidi=basic$if(shorthands)$$else$,shorthands=off$endif$$for(babeloptions)$,$babeloptions$$endfor$]{babel}
-\else
 \usepackage[bidi=default$if(shorthands)$$else$,shorthands=off$endif$$for(babeloptions)$,$babeloptions$$endfor$]{babel}
-\fi
-$if(babel-lang)$
-$if(mainfont)$
-\ifPDFTeX
-\else
-\babelfont{rm}[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$$if(mainfontfallback)$,RawFeature={fallback=mainfontfallback}$endif$]{$mainfont$}
-\fi
-$endif$
-$endif$
-$for(babelfonts/pairs)$
-\babelfont[$babelfonts.key$]{rm}{$babelfonts.value$}
-$endfor$
-\ifLuaTeX
-  \usepackage{selnolig} % disable illegal ligatures
-\fi
 $endif$
 $--
 $-- pagestyle
@@ -529,19 +403,11 @@ $--
 $-- text direction support for pdftex
 $--
 $if(dir)$
-\ifPDFTeX
-  \TeXXeTstate=1
-  \newcommand{\RL}[1]{\beginR #1\endR}
-  \newcommand{\LR}[1]{\beginL #1\endL}
-  \newenvironment{RTL}{\beginR}{\endR}
-  \newenvironment{LTR}{\beginL}{\endL}
-\fi
-\ifluatex
-  \newcommand{\RL}[1]{\bgroup\textdir TRT#1\egroup}
-  \newcommand{\LR}[1]{\bgroup\textdir TLT#1\egroup}
-  \newenvironment{RTL}{\textdir TRT\pardir TRT\bodydir TRT}{}
-  \newenvironment{LTR}{\textdir TLT\pardir TLT\bodydir TLT}{}
-\fi
+\TeXXeTstate=1
+\newcommand{\RL}[1]{\beginR #1\endR}
+\newcommand{\LR}[1]{\beginL #1\endL}
+\newenvironment{RTL}{\beginR}{\endR}
+\newenvironment{LTR}{\beginL}{\endL}
 $endif$
 $--
 $-- bibliography support support for natbib and biblatex
@@ -612,16 +478,8 @@ $endif$
   pdfcreator={LaTeX via pandoc with the Eisvogel template}}
 $if(pdf-trailer-id)$
 
-\ifXeTeX
-\special{pdf:trailerid [ $pdf-trailer-id$ ]}
-\fi
-\ifPDFTeX
 \pdftrailerid{}
 \pdftrailer{/ID [ $pdf-trailer-id$ ]}
-\fi
-\ifLuaTeX
-\pdfvariable trailerid {[ $pdf-trailer-id$ ]}
-\fi
 $endif$
 
 $if(title)$
@@ -696,50 +554,19 @@ $endif$
 % Note that the font has been officially renamed to `Source Sans 3`, and
 % the version provided by the `sourcesanspro` package is slightly outdated.
 % You can install the newer version locally and use it, for example, with
-% `mainfont: "Source Sans 3"` in the YAML metadata (requires XeTeX or LuaTeX).
+% `fontfamily: sourcesanspro` in the YAML metadata.
 %
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
-  $if(fontfamily)$
-  $else$
-  \usepackage[default]{sourcesanspro}
-  \usepackage{sourcecodepro}
-  $endif$
-\else % if not pdftex
-  $if(mainfont)$
-  $else$
-  \usepackage[default]{sourcesanspro}
-  \usepackage{sourcecodepro}
-
-  % XeLaTeX specific adjustments for straight quotes: https://tex.stackexchange.com/a/354887
-  % This issue is already fixed (see https://github.com/silkeh/latex-sourcecodepro/pull/5) but the
-  % fix is still unreleased.
-  % TODO: Remove this workaround when the new version of sourcecodepro is released on CTAN.
-  \ifxetex
-    \makeatletter
-    \defaultfontfeatures[\ttfamily]
-      { Numbers   = \sourcecodepro@figurestyle,
-        Scale     = \SourceCodePro@scale,
-        Extension = .otf }
-    \setmonofont
-      [ UprightFont    = *-\sourcecodepro@regstyle,
-        ItalicFont     = *-\sourcecodepro@regstyle It,
-        BoldFont       = *-\sourcecodepro@boldstyle,
-        BoldItalicFont = *-\sourcecodepro@boldstyle It ]
-      {SourceCodePro}
-    \makeatother
-  \fi
-  $endif$
-\fi
+$if(fontfamily)$
+$else$
+\usepackage[default]{sourcesanspro}
+\usepackage{sourcecodepro}
+$endif$
 
 %
 % heading color
 %
 \definecolor{heading-color}{RGB}{40,40,40}
-\ifPDFTeX
-  \newcommand{\headingfontfamily}{\ttfamily}
-\else
-  \newfontfamily\headingfontfamily{Roboto Light}
-\fi
+\newcommand{\headingfontfamily}{\ttfamily}
 % By default, the KOMA-Script classes will typeset sectioning headings in
 % sans-serif. Use the normal body font for headings.
 \addtokomafont{disposition}{\headingfontfamily\color{heading-color}\bfseries}
