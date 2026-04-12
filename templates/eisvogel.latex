@@ -738,7 +738,7 @@ $endif$
 \ifPDFTeX
   \newcommand{\headingfontfamily}{\ttfamily}
 \else
-  \newfontfamily\headingfontfamily{Noto Sans Mono}
+  \newfontfamily\headingfontfamily{Roboto Light}
 \fi
 % By default, the KOMA-Script classes will typeset sectioning headings in
 % sans-serif. Use the normal body font for headings.
