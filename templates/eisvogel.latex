@@ -566,7 +566,8 @@ $endif$
 \newcommand{\chapterfontfamily}{\roboto\fontseries{l}\selectfont}
 % By default, the KOMA-Script classes will typeset sectioning headings in
 % sans-serif. Use the normal body font for headings.
-\addtokomafont{disposition}{\headingfontfamily\color{heading-color}\bfseries}
+\setkomafont{disposition}{\headingfontfamily\mdseries\color{heading-color}}
+\renewcommand*{\raggedsection}{\centering}
 
 % Make first level headers underlined and start from new page
 $if(book)$
