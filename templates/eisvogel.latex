@@ -345,6 +345,7 @@ $endif$
 % Keep figure numbering continuous across chapters.
 $if(book)$
 \counterwithout{figure}{chapter}
+\counterwithout{footnote}{chapter}
 $endif$
 $if(images-own-page)$
 % One image per page, centered vertically and horizontally
