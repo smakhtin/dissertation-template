@@ -1,0 +1,4 @@
+- [x] Better formatting for footnotes
+- [x] Numbers for figures across whole book
+- [] Chapter title instead of phd title
+- [] Fix code
