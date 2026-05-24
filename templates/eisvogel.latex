@@ -81,6 +81,9 @@ $else$
 \usepackage[margin=2.5cm,includehead=true,includefoot=true,centering,$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
 $endif$
 
+% Needed to patch chapter/section commands for deferred full-page image notes.
+\usepackage{etoolbox}
+
 $if(sentence-no-split)$
 % Prevent sentences and paragraphs from being split across pages
 \widowpenalty=10000
@@ -292,16 +295,46 @@ $else$
   \fi%
 $endif$
 }
-% Command for full-page images - fills entire page as background, cropping if needed
-\newcommand{\fullpageimage}[1]{%
+% Command for full-page images.
+% Optional arg: caption/description text used for LoF and next-page footnote.
+\newif\iffullpageimagenotepending
+\fullpageimagenotependingfalse
+\newcommand{\fullpageimagedefinenote}[1]{%
+  \gdef\fullpageimagenotetext{#1}%
+  \fullpageimagenotependingtrue%
+}
+\newcommand{\fullpageimageflushnote}{%
+  \iffullpageimagenotepending%
+    \fullpageimagenote{\fullpageimagenotetext}%
+    \fullpageimagenotependingfalse%
+  \fi%
+}
+\newcommand{\fullpageimagenote}[1]{%
+  \begingroup%
+  \renewcommand\thefootnote{}%
+  \footnotetext{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup%
+}
+\newcommand{\fullpageimage}[2][]{%
   \clearpage%
+  \refstepcounter{figure}% count as a regular figure
+  \phantomsection%
+  \if\relax\detokenize{#1}\relax
+    \addcontentsline{lof}{figure}{\protect\numberline{\thefigure}{Full-page image}}%
+  \else
+    \addcontentsline{lof}{figure}{\protect\numberline{\thefigure}{#1}}%
+  \fi
   \thispagestyle{empty}%
   \begin{tikzpicture}[remember picture,overlay]
     \node[inner sep=0pt] at (current page.center){%
-      \includegraphics[width=\paperwidth,height=\paperheight,keepaspectratio]{#1}%
+      \includegraphics[width=\paperwidth,height=\paperheight,keepaspectratio]{#2}%
     };
   \end{tikzpicture}%
-  \clearpage%
+  \if\relax\detokenize{#1}\relax\else
+    \fullpageimagedefinenote{Figure \thefigure: #1}%
+  \fi
+  \newpage%
 }
 % Set default figure placement to htbp
 % Make use of float-package and set default placement for figures to H.
@@ -511,7 +544,6 @@ $endif$
 %
 $if(titlepage)$
 \usepackage{pagecolor}
-\usepackage{afterpage}
 $if(titlepage-background)$
 \usepackage{tikz}
 $endif$
@@ -577,12 +609,39 @@ $endif$
 % Make first level headers underlined and start from new page
 $if(book)$
 \addtokomafont{chapter}{\chapterfontfamily\underline}
+\let\oldchapter\chapter
+\RenewDocumentCommand{\chapter}{s o m}{%
+  \IfBooleanTF{#1}{%
+    \oldchapter*{#3}%
+  }{%
+    \IfNoValueTF{#2}{%
+      \oldchapter{#3}%
+    }{%
+      \oldchapter[#2]{#3}%
+    }%
+  }%
+  \fullpageimageflushnote%
+}
 $else$
 \addtokomafont{section}{\underline}
 \RedeclareSectionCommand[beforeskip=-1sp,afterskip=1sp]{section}
 \let\oldsection\section
-\renewcommand{\section}{\clearpage\oldsection}
+\RenewDocumentCommand{\section}{s o m}{%
+  \clearpage%
+  \IfBooleanTF{#1}{%
+    \oldsection*{#3}%
+  }{%
+    \IfNoValueTF{#2}{%
+      \oldsection{#3}%
+    }{%
+      \oldsection[#2]{#3}%
+    }%
+  }%
+  \fullpageimageflushnote%
+}
 $endif$
+
+\AtEndDocument{\fullpageimageflushnote}
 
 %
 % variables for title, author and date
