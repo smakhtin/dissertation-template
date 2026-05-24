@@ -568,8 +568,8 @@ $endif$
 %
 % captions
 %
-\definecolor{caption-color}{HTML}{777777}
-\usepackage[font={stretch=1.2}, textfont={color=caption-color}, position=top, skip=4mm, labelfont=bf, singlelinecheck=false, justification=$if(caption-justification)$$caption-justification$$else$raggedright$endif$]{caption}
+\definecolor{caption-color}{HTML}{000000}
+\usepackage[font={stretch=1.2,color=caption-color}, position=top, skip=4mm, singlelinecheck=false, justification=$if(caption-justification)$$caption-justification$$else$raggedright$endif$]{caption}
 \setcapindent{0em}
 
 %
