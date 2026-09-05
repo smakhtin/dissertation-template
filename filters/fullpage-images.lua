@@ -56,3 +56,33 @@ function Figure(elem)
   end
   return elem
 end
+
+function Pandoc(doc)
+  local blocks = {}
+  local flush_after_heading = false
+
+  for index, block in ipairs(doc.blocks) do
+    table.insert(blocks, block)
+
+    if flush_after_heading then
+      table.insert(blocks, pandoc.RawBlock("latex", "\\fullpageimageflushnote{}"))
+      flush_after_heading = false
+    end
+
+    local is_fullpage_image = block.t == "RawBlock"
+      and block.format == "latex"
+      and block.text:match("^\\fullpageimage")
+    local next_block = doc.blocks[index + 1]
+
+    if is_fullpage_image and next_block then
+      if next_block.t == "Header" then
+        flush_after_heading = true
+      else
+        table.insert(blocks, pandoc.RawBlock("latex", "\\fullpageimageflushnote{}"))
+      end
+    end
+  end
+
+  doc.blocks = pandoc.Blocks(blocks)
+  return doc
+end
