@@ -5,3 +5,4 @@
 - [x] Chapter title instead of phd title
 - [x] Full page image text is not shown if it's not next chapter
 - [] Fix code display
+- [] Format URL references with Retrieved from
